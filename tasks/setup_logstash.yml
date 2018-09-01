@@ -19,4 +19,47 @@
     state: stopped
     enabled: yes
 
+- name: set Logstash configuration files.
+  template:
+    src: "logstash/{{ item }}.j2"
+    dest: "/etc/logstash/conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - 010_input_local_syslog.conf
+    - 300_output_elastic.conf
+  notify: restart_logstash
+
+- name: set Logstash filters.
+  copy:
+    src: "logstash/filters/{{ item }}"
+    dest: "/etc/logstash/conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - 201_filter_syslog.conf
+    - 210_filter_apache.conf
+    - 211_filter_nginx.conf
+  notify: restart_logstash
+
+
+### Plugins
+- name: Get list of installed plugins.
+  command: >
+    ./bin/logstash-plugin list
+    chdir=/opt/logstash
+  register: logstash_plugins_list
+  changed_when: false
+
+- name: Install configured plugins.
+  command: >
+    ./bin/logstash-plugin install {{ item }}
+    chdir=/opt/logstash
+  with_items: "{{ logstash_install_plugins }}"
+  when: "item not in logstash_plugins_list.stdout"
+  notify: restart logstash
+
+
 # todo: config de logstash

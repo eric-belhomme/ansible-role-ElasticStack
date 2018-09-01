@@ -1,0 +1,23 @@
+---
+
+- name: check is elastic.co RPM signing key (DEADB33F) is present on system
+  rpm_key:
+    state: absent
+    key: "{{ rpm_elastic_gpg_key }}"
+  register: elastic_signing_key_absent
+
+- name: install the elastic.co public signing key
+  rpm_key:
+    state: present
+    key: "{{ rpm_elastic_gpg_url }}"
+  when: elastic_signing_key_absent
+
+- name: create elastic.repo RPM repository
+  yum_repository:
+    name: "elastic-{{ es_major_version }}"
+    description: "Elastic.co repository for {{ es_major_version }} packages"
+    file: external_repos
+    baseurl: "https://artifacts.elastic.co/packages/{{ es_major_version }}/yum"
+    gpgcheck: yes
+    gpgkey: "{{ rpm_elastic_gpg_url }}"
+

@@ -1,0 +1,19 @@
+---
+
+### Following defaults aims to be identical to elastic's elasticsearch official role
+### these should be overridden at playbook level
+es_major_version: "6.x"
+es_api_host: "localhost"
+es_api_port: 9200
+
+# defaults file for ansible-role-ElasticStack
+rpm_elastic_gpg_key: 'D88E42B4'
+rpm_elastic_gpg_url: 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
+
+# Kibana variables
+ki_user: kibana
+ki_group: kibana
+ki_server_port: 1
+ki_server_bind: 127.0.0.1
+
+# LogStash variables

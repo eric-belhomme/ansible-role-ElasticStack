@@ -1,0 +1,17 @@
+---
+
+- include: repo_rpm.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Install Kibana.
+  yum:
+    name: kibana
+    state: present
+
+- name: Ensure Kibana is stopped and enabled at boot.
+  service:
+    name: kibana
+    state: stopped
+    enabled: yes
+
+# todo: config de kibana

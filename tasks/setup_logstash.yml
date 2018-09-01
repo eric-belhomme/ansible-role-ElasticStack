@@ -1,0 +1,22 @@
+---
+
+- include: repo_rpm.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: install JRE
+  yum:
+    name: java
+    state: latest
+
+- name: Install LogStash.
+  yum:
+    name: logstash
+    state: present
+
+- name: Ensure LogStash is stopped and enabled at boot.
+  service:
+    name: logstash
+    state: stopped
+    enabled: yes
+
+# todo: config de logstash

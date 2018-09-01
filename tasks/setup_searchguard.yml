@@ -1,0 +1,23 @@
+---
+# tasks file for SearchGuard plugin
+# https://search-guard.com/
+
+
+# This step is optional but recommended especially for large clusters with a
+# huge amount of data. This step makes sure that shards will not be shifted
+# around when restarting the cluster, causing a lot of I/O. See also
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/shards-allocation.html
+- name: Disable shard allocation
+  uri:
+    url: https://localhost:9200/_cluster/settings?pretty
+    method: PUT
+    HEADER_Content-Type: 'application/json'
+    body: '{"persistent": {"cluster.routing.allocation.enable": "none"}}'
+    body_format: json
+
+# todo: get zip file locally (files/) or remotely throught http from upstream
+# https://oss.sonatype.org/service/local/repositories/releases/content/com/floragunn/search-guard-6/6.4.0-23.0/search-guard-6-6.4.0-23.0.zip
+
+# todo: handle interactive install with expect unless there is an unattended mode install ?
+- name: install SearchGuard plugin
+  command: bin/elasticsearch-plugin install -b file:///path/to/search-guard-6-<version>.zip

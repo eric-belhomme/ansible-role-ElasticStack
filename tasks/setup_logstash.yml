@@ -8,12 +8,12 @@
     name: java
     state: latest
 
-- name: Install LogStash.
+- name: Install LogStash package
   yum:
     name: logstash
     state: present
 
-- name: Ensure LogStash is stopped and enabled at boot.
+- name: Ensure LogStash is stopped and enabled at boot
   service:
     name: logstash
     state: stopped

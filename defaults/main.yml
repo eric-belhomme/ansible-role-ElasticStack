@@ -17,3 +17,4 @@ ki_server_port: 1
 ki_server_bind: 127.0.0.1
 
 # LogStash variables
+ls_local_syslog_path: '/var/log/messages'

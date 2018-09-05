@@ -1,2 +1,14 @@
 ---
 # tasks file for ansible-role-ElasticStack
+
+- name: add RPM repo if needed
+  include: 'repo_rpm.yml'
+
+- name: install LogStash
+  include: 'setup_logstash.yml'
+
+- name: install Kibana
+  include: 'setup_kibana.yml'
+
+- name: install SearchGuard add-on plugin
+  include: 'setup_searchguard.yml'

@@ -7,6 +7,19 @@
   remote_user: root
 
   vars:
+    es_instance_name: "{{ ansible_hostname }}"
+    es_data_dirs:
+    - '/opt/elasticsearch/data'
+    es_log_dir: '/var/log/elasticsearch'
+    es_config:
+      node.name: "{{ ansible_hostname }}"
+      cluster.name: 'my_cluster'
+      http.port: 9200
+      transport.tcp.port: 9300
+      discovery.zen.ping.unicast.hosts: "localhost:9300"
+      node.data: true
+      node.master: true
+
 
   roles:
     - ansible-elasticsearch

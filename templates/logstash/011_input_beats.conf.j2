@@ -1,10 +1,10 @@
 input {
   beats {
     port => {{ ls_beats_listen_port }}
-{% if logstash_ssl_certificate_file and logstash_ssl_key_file %}
+{% if ls_ssl_certificate_file and ls_ssl_key_file %}
     ssl => true
-    ssl_certificate => "{{ logstash_ssl_dir }}/{{ logstash_ssl_certificate_file | basename }}"
-    ssl_key => "{{ logstash_ssl_dir }}/{{ logstash_ssl_key_file | basename }}"
+    ssl_certificate => "{{ ls_ssl_certificate_file }}"
+    ssl_key => "{{ ls_ssl_key_file }}"
     ssl_verify_mode => "force_peer"
 {% endif %}
   }

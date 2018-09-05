@@ -19,7 +19,7 @@
     state: stopped
     enabled: yes
 
-- name: set Logstash configuration files.
+- name: set LogStash configuration files.
   template:
     src: "logstash/{{ item }}.j2"
     dest: "/etc/logstash/conf.d/{{ item }}"
@@ -27,12 +27,11 @@
     group: root
     mode: 0644
   with_items:
-    - 011_input_beats.conf
     - 300_output_elastic.conf
   notify: restart_logstash
 
 
-- name: Create Logstash configuration file for local syslog.
+- name: set LogStash configuration file for local syslog
   template:
     src: "logstash/010_input_local_syslog.conf.j2"
     dest: "/etc/logstash/conf.d/010_input_local_syslog.conf"
@@ -40,6 +39,16 @@
     group: root
     mode: 0644
   when: ls_local_syslog_enable
+  notify: restart_logstash
+
+- name: set LogStash configuration file for Beats
+  template:
+    src: "logstash/011_input_beats.conf.j2"
+    dest: "/etc/logstash/conf.d/011_input_beats.conf"
+    owner: root
+    group: root
+    mode: 0644
+  when: "'logstash-input-beats' in ls_install_plugins"
   notify: restart_logstash
 
 - name: set Logstash filters.
@@ -63,11 +72,11 @@
     recurse: yes
     patterns: 'logstash-plugin'
     use_regex: no
-  register: find_logstash-plugin
+  register: find_logstash_plugin
 
 - set_fact:
-    logstash_plugin: "{{ find_logstash-plugin.files[0].path }}"
-  when: find_logstash-plugin.matched == 1
+    logstash_plugin: "{{ find_logstash_plugin.files[0].path }}"
+  when: find_logstash_plugin.matched == 1
  
 - block:
 
@@ -86,7 +95,7 @@
     when: "item not in logstash_plugins_list.stdout"
     notify: restart_logstash
 
-  when: find_logstash-plugin.matched == 1
+  when: find_logstash_plugin.matched == 1
 
 # todo: config de logstash
 # vim: set expandtab

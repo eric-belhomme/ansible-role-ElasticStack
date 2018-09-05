@@ -19,6 +19,8 @@ ki_server_bind: 127.0.0.1
 # LogStash variables
 ls_local_syslog_enable: true
 ls_local_syslog_path: '/var/log/messages'
+ls_ssl_certificate_file: ''
+ls_ssl_key_file: ''
 ls_beats_listen_port: 5044
 ls_install_plugins:
 - logstash-input-beats

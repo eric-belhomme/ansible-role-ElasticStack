@@ -58,12 +58,12 @@
 
 ### Plugins
 - name: find logstash-plugin executable
-	find:
-		paths: '/usr'
-		recurse: yes
-		patterns: 'logstash-plugin'
-		use_regex: no
-	register: find_logstash-plugin
+  find:
+    paths: '/usr'
+    recurse: yes
+    patterns: 'logstash-plugin'
+    use_regex: no
+  register: find_logstash-plugin
 
 - set_fact:
     logstash_plugin: "{{ find_logstash-plugin.files[0].path }}"
@@ -71,21 +71,23 @@
  
 - block:
 
-	- name: Get list of installed plugins
-	  command: >
-	    {{ logstash_plugin }} list
-#	    chdir=/opt/logstash
-	  register: logstash_plugins_list
-	  changed_when: false
-	
-	- name: Install configured plugins
-	  command: >
-	    {{ logstash_plugin }} install {{ item }}
-#	    chdir=/opt/logstash
-	  with_items: "{{ ls_install_plugins }}"
-	  when: "item not in logstash_plugins_list.stdout"
-	  notify: restart_logstash
+  - name: Get list of installed plugins
+    command: >
+      {{ logstash_plugin }} list
+#     chdir=/opt/logstash
+    register: logstash_plugins_list
+    changed_when: false
+  
+  - name: Install configured plugins
+    command: >
+      {{ logstash_plugin }} install {{ item }}
+#     chdir=/opt/logstash
+    with_items: "{{ ls_install_plugins }}"
+    when: "item not in logstash_plugins_list.stdout"
+    notify: restart_logstash
 
   when: find_logstash-plugin.matched == 1
 
 # todo: config de logstash
+# vim: set expandtab
+

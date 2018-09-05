@@ -1,2 +1,9 @@
 ---
 # handlers file for ansible-role-ElasticStack
+
+- name: restart_logstash
+  service:
+    name: logstash
+    state: restarted
+
+# vim: set expandtab

@@ -27,8 +27,19 @@
     group: root
     mode: 0644
   with_items:
-    - 010_input_local_syslog.conf
+    - 011_input_beats.conf
     - 300_output_elastic.conf
+  notify: restart_logstash
+
+
+- name: Create Logstash configuration file for local syslog.
+  template:
+    src: "logstash/010_input_local_syslog.conf.j2"
+    dest: "/etc/logstash/conf.d/010_input_local_syslog.conf"
+    owner: root
+    group: root
+    mode: 0644
+  when: ls_local_syslog_enable
   notify: restart_logstash
 
 - name: set Logstash filters.
@@ -46,20 +57,35 @@
 
 
 ### Plugins
-- name: Get list of installed plugins.
-  command: >
-    ./bin/logstash-plugin list
-    chdir=/opt/logstash
-  register: logstash_plugins_list
-  changed_when: false
+- name: find logstash-plugin executable
+	find:
+		paths: '/usr'
+		recurse: yes
+		patterns: 'logstash-plugin'
+		use_regex: no
+	register: find_logstash-plugin
 
-- name: Install configured plugins.
-  command: >
-    ./bin/logstash-plugin install {{ item }}
-    chdir=/opt/logstash
-  with_items: "{{ logstash_install_plugins }}"
-  when: "item not in logstash_plugins_list.stdout"
-  notify: restart logstash
+- set_fact:
+    logstash_plugin: "{{ find_logstash-plugin.files[0].path }}"
+  when: find_logstash-plugin.matched == 1
+ 
+- block:
 
+	- name: Get list of installed plugins
+	  command: >
+	    {{ logstash_plugin }} list
+#	    chdir=/opt/logstash
+	  register: logstash_plugins_list
+	  changed_when: false
+	
+	- name: Install configured plugins
+	  command: >
+	    {{ logstash_plugin }} install {{ item }}
+#	    chdir=/opt/logstash
+	  with_items: "{{ ls_install_plugins }}"
+	  when: "item not in logstash_plugins_list.stdout"
+	  notify: restart_logstash
+
+  when: find_logstash-plugin.matched == 1
 
 # todo: config de logstash

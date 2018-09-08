@@ -1,4 +1,5 @@
 ---
+# vim: set expandtab
 
 - include: repo_rpm.yml
   when: ansible_os_family == 'RedHat'
@@ -98,5 +99,4 @@
   when: find_logstash_plugin.matched == 1
 
 # todo: config de logstash
-# vim: set expandtab
 

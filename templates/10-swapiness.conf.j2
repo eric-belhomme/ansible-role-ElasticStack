@@ -1,0 +1,6 @@
+# Reduce the kernel’s tendency to swap and should not lead to swapping under normal
+# circumstances, while still allowing the whole system to swap in emergency conditions.
+#
+# Required for Elasticsearch
+
+vm.swappiness = {{ swappiness }}
